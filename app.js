@@ -64,7 +64,7 @@ app.use('/api', api);
 // create the server based on express
 var server = require('http').createServer(app);
 
-var port = process.env.port ||　1337;
+var port = process.env.PORT ||　1337;
 
 // start the server
 server.listen(port, '127.0.0.1', function () {
