@@ -67,6 +67,6 @@ var server = require('http').createServer(app);
 var port = process.env.PORT ||　1337;
 
 // start the server
-server.listen(port, '127.0.0.1', function () {
+server.listen(port, function () {
   console.log('The Next XYZ is looking good! Open http://localhost:%d to begin.', 1337);
 });
