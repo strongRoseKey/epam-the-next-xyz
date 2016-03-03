@@ -24,10 +24,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // setup our public directory (which will serve any file stored in the 'public' directory)
 app.use(express.static('public'));
 
+
+//add by fiona for adding jscode to page
+app.use(function (req, res, next) {
+ res.locals.scripts = [];
+ next();
+});
 // respond to the get request with the home page
 app.get('/', function (req, res) {
+    res.locals.scripts.push('/js/home.js');
     res.render('home');
-});
+})
 
 // respond to the get request with the about page
 app.get('/about', function(req, res) {
@@ -50,13 +57,15 @@ app.post('/register', function(req, res) {
 
 // respond to the get request with dashboard page (and pass in some data into the template / note this will be rendered server-side)
 app.get('/dashboard', function (req, res) {
-    res.render('dashboard', {
-    	stuff: [{
-		    greeting: "Hello",
-		    subject: "World!"
-		}]
-    });
+  res.render('dashboard', {
+   stuff: [{
+    greeting: "Hello",
+    subject: "World!"
+  }]
 });
+});
+
+
 
 // the api (note that typically you would likely organize things a little differently to this)
 app.use('/api', api);
@@ -64,7 +73,7 @@ app.use('/api', api);
 // create the server based on express
 var server = require('http').createServer(app);
 
-var port = process.env.PORT ||　1337;
+var port = process.env.port ||　1337;
 
 // start the server
 server.listen(port, function () {
