@@ -17,7 +17,7 @@ var api = require('./routes/api');
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-// express middleware that parser the key-value pairs sent in the request body in the format of our choosing (e.g. json) 
+// express middleware that parser the key-value pairs sent in the request body in the format of our choosing (e.g. json)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -42,7 +42,7 @@ app.get('/register', function(req, res) {
 // handle the posted registration data
 app.post('/register', function(req, res) {
 
-  // get the data out of the request (req) object 
+  // get the data out of the request (req) object
   // store the user in memory here
 
   res.redirect('/dashboard');
@@ -64,7 +64,9 @@ app.use('/api', api);
 // create the server based on express
 var server = require('http').createServer(app);
 
+var port = process.env.port ||　1337;
+
 // start the server
-server.listen(1337, '127.0.0.1', function () {
+server.listen(port, '127.0.0.1', function () {
   console.log('The Next XYZ is looking good! Open http://localhost:%d to begin.', 1337);
 });
