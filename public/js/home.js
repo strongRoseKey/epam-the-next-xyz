@@ -12,8 +12,13 @@ $(function(){
         $(p1).html(data[i].title);
 
         var img = document.createElement("img");
-        $(img).attr("src","../res/book1.jpg");
-        img.attr("id",data[i].id);
+        $(img).attr("src",data[i].image);
+        $(img).attr("id",data[i].id);
+        $(img).attr("width","300px");
+        $(img).attr("height","180px");
+
+
+
         // $("img").src()
 
          div1.appendChild(img);
@@ -21,6 +26,7 @@ $(function(){
          div1.appendChild(p1);
          div1.insertBefore(p1,img);
          $(img).click(function(){
+
 
 
          })

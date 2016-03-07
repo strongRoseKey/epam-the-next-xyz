@@ -1,6 +1,25 @@
 // include and setup express
 var express = require('express');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost/epam");
+var Schema = mongoose.Schema;
+
+//https://github.com/Automattic/mongoose
+
+//create a schema for articles
+var ArticleSchema = new Schema({
+  title:String,
+  url:String,
+  image:String,
+  username:String,
+  data:Date
+});
+
+mongoose.model('Article',ArticleSchema);
+var Article = mongoose.model('Article');
+
 
 // include express handlebars (templating engine)
 var exphbs  = require('express-handlebars');
