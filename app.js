@@ -55,6 +55,11 @@ app.get('/', function (req, res) {
     res.render('home');
 })
 
+// app.get('/detail', function (req, res) {
+//     res.locals.scripts.push('/js/showdtl.js');
+//     res.render('detail');
+// })
+
 // respond to the get request with the about page
 app.get('/about', function(req, res) {
   res.render('about');

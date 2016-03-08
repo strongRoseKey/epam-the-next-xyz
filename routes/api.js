@@ -30,12 +30,16 @@ router.get('/articles', function(req, res, next) {
 });
 
 router.get('/articles/:id', function(req, res, next) {
+	res.header('Access-Control-Allow-Origin','*');
+	res.header('Access-Control-Allow-Headers','X-Requested-With');
 
-	Article.findById(req.params.id, function(err,article){
+		console.log("req.params.id:"+req.params._id);
+
+	Article.findById(req.params._id, function(err,article){
 		if(!err){
-			res.json(article);
+			res.render('detail',{data:article});
 		}else{
-			res.send(404,'File not found!');
+			res.send(404,'File not found!??????');
 		}
 	})
 
