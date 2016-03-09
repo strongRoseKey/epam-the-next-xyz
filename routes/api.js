@@ -1,10 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
-
 var mongoose = require('mongoose');
+
+var Article = require("../data/partyDB.js");
+
+var Userinfo = require("../data/userDB.js");
+
+// var express_user = require('express-users');
+
 //create a schema for articles
-var Article = mongoose.model('Article');
+// var Article = mongoose.model('Article');
 
 // note that typically data would NOT be loaded from the filesystem in this manner :)
 
@@ -54,6 +60,13 @@ router.get('/articles/:id', function(req, res, next) {
 
 	// 	res.json(data);
 	// });
+});
+
+router.post('/articles',function(req,res,next){
+
+});
+router.post('/register',function(req,res,next){
+
 });
 
 module.exports = router;

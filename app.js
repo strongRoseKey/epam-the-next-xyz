@@ -2,24 +2,21 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var flash = require('express-flash');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
 
 mongoose.connect("mongodb://localhost/epam");
-var Schema = mongoose.Schema;
+
+//passport settings
+// app.use(express.cookieParser());
+// app.use(express.session({secret: 'blog.fens.me', cookie: { maxAge: 60000 }}));
+
 
 //https://github.com/Automattic/mongoose
-
-//create a schema for articles
-var ArticleSchema = new Schema({
-  title:String,
-  url:String,
-  image:String,
-  username:String,
-  data:Date
-});
-
-mongoose.model('Article',ArticleSchema);
-var Article = mongoose.model('Article');
-
 
 // include express handlebars (templating engine)
 var exphbs  = require('express-handlebars');
@@ -40,20 +37,69 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+
 // setup our public directory (which will serve any file stored in the 'public' directory)
 app.use(express.static('public'));
+//fiona add 0308
+// app.use(require('express-users')({
+//   store: 'memory',
 
+//   // views: ['views/layouts', 'views/users']
+// }));
+// app.use(express_user({store: 'memory'}));
 
 //add by fiona for adding jscode to page
 app.use(function (req, res, next) {
  res.locals.scripts = [];
  next();
 });
+
+
+app.use(cookieParser());
+app.use(session({ secret: 'keyboard cat' , resave: false, saveUninitialized: false}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+passport.use(new LocalStrategy({
+usernameField: 'name',
+passwordField: 'password'
+},
+function(username, password, done) {
+// User.findOne()
+// findByUsername(username, function(err, user) {
+// if (err) { return done(err); }
+// if (!user) { return done(null, false); }
+// if (user.password != password) { return done(null, false); }
+// return done(null, user);
+// });
+var user = {'name':username,'passport':password};
+return done(null,user);
+}
+));
+passport.serializeUser(function(user, done) {
+done(null, user);
+});
+passport.deserializeUser(function(user, done) {
+done(null, user);
+});
+
+app.get('/dashboard', function (req, res) {
+// res.locals.scripts.push('/js/dashboard.js');
+res.render('dashboard', { username:req.user.name,
+  stuff: [{
+    greeting: "Hello",
+    subject: "World!"
+  }]
+});
+});
+
 // respond to the get request with the home page
 app.get('/', function (req, res) {
     res.locals.scripts.push('/js/home.js');
     res.render('home');
-})
+});
 
 // app.get('/detail', function (req, res) {
 //     res.locals.scripts.push('/js/showdtl.js');
@@ -61,30 +107,60 @@ app.get('/', function (req, res) {
 // })
 
 // respond to the get request with the about page
-app.get('/about', function(req, res) {
+app.get('/about', function (req, res) {
   res.render('about');
 });
 
 // respond to the get request with the register page
-app.get('/register', function(req, res) {
-  res.render('register');
+app.get('/register', function (req, res) {
+    // res.locals.scripts.push('/js/register.js');
+    res.render('register');
 });
 
-// handle the posted registration data
-app.post('/register', function(req, res) {
 
-  // get the data out of the request (req) object
-  // store the user in memory here
+// passport.use('local', new LocalStrategy(
+//     function (username, password, done) {
+//         var user = {
+//             id: '1',
+//             username: 'admin',
+//             password: 'pass'
+//         };
 
-  res.redirect('/dashboard');
-});
+//         if (username !== user.username) {
+//             return done(null, false, { message: 'Incorrect username.' });
+//         }
+//         if (password !== user.password) {
+//             return done(null, false, { message: 'Incorrect password.' });
+//         }
+
+//         return done(null, user);
+//     }
+// ));
+
+app.post('/register',
+    passport.authenticate('local', {
+        successRedirect: '/dashboard',
+        failureRedirect: '/'
+    }));
+
+//    function (req, res) {
+
+//     // If this function gets called, authentication was successful.
+//     // `req.user` contains the authenticated user.
+//     res.redirect('/dashboard' + req.user.username);
+
+//   // get the data out of the request (req) object
+//   // store the user in memory here
+
+//   // res.redirect('/dashboard');
+// });
 
 // respond to the get request with dashboard page (and pass in some data into the template / note this will be rendered server-side)
 app.get('/dashboard', function (req, res) {
   res.render('dashboard', {
    stuff: [{
     greeting: "Hello",
-    subject: "World!"
+    subject: res.user.username,
   }]
 });
 });
