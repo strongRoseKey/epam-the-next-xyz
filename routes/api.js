@@ -43,17 +43,17 @@ router.get('/articles/:id', function(req, res, next) {
 		// console.log("req.params.id:"+req.params.id);
 
 
-	Article.findById(req.params.id, function(err,article){
-		if(!err){
-			console.log(article.title);
-			res.render('detail',{
-				title:article.title,
-				image:article.image,
-				summary:article.summary});
-		}else{
-			res.send(404,'File not found!??????');
-		}
-	})
+		Article.findById(req.params.id, function(err,article){
+			if(!err){
+				console.log(article.title);
+				res.render('detail',{
+					title:article.title,
+					image:article.image,
+					summary:article.summary});
+			}else{
+				res.send(404,'File not found!??????');
+			}
+		})
 
 	// var fs = require('fs');
 	// var obj;
@@ -71,8 +71,6 @@ router.get('/articles/:id', function(req, res, next) {
 router.post('/articles',function(req,res,next){
 
 });
-router.post('/register',function(req,res,next){
 
-});
 
 module.exports = router;
