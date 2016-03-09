@@ -1,6 +1,10 @@
 <h2>Detail Page</h2>
 <div id="stuff">
-  <h4>Welcome <em>ADD NAME HERE</em></h4>
+  {{!-- <h4>Welcome <em>ADD NAME HERE</em></h4> --}}
+
+  <img src="{{ image }}" class="img-responsive" style="width: 100%">
+  <h3>{{ title }}</h3>
+  <p>{{ summary }}</p>
 
   {{#each stuff}}
   <p>{{ greeting }} {{ subject }}</p>
@@ -10,6 +14,8 @@
 
   <button class="btn btn-inverse btn-lg">Add New Article</button>
 </div>
+
+
 
 <br>
 <div class="panel panel-default">
@@ -23,3 +29,4 @@
     </ul>
   </div>
 </div>
+

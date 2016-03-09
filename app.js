@@ -62,28 +62,68 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-passport.use(new LocalStrategy({
-usernameField: 'name',
-passwordField: 'password'
-},
-function(username, password, done) {
-// User.findOne()
-// findByUsername(username, function(err, user) {
-// if (err) { return done(err); }
-// if (!user) { return done(null, false); }
-// if (user.password != password) { return done(null, false); }
-// return done(null, user);
+module.exports = function() {
+
+  // Load the 'User' model
+  var User = mongoose.model('Userinfo');
+
+  passport.use(new LocalStrategy(
+//
+    function (username, password, done) {
+      User.findOne({ email: username }, function (err, user) {
+        if (err) { return done(err); }
+        if (!user) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        if (!user.validPassword(password)) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+      });
+    }
+  ));
+
+  // Use Passport's 'serializeUser' method to serialize the user
+  passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+
+  // Use Passport's 'deserializeUser' method to load the user document
+  passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+
+};
+
+// passport.use(new LocalStrategy({
+//   usernameField: 'name',
+//   passwordField: 'password'
+// },
+// function (username, password, done) {
+// // // User.findOne({email:username}, function (err, user){
+// // //   if(err){
+// // //     return done(err);
+// // //   }
+// // //   if(!user){
+// // //     return done(null, false,)
+// // //   }
+// // })
+// // findByUsername(username, function(err, user) {
+// // if (err) { return done(err); }
+// // if (!user) { return done(null, false); }
+// // if (user.password != password) { return done(null, false); }
+// // return done(null, user);
+// // });
+// var user = {'name':username,'passport':password};
+// return done(null,user);
+// }
+// ));
+// passport.serializeUser(function(user, done) {
+//   done(null, user);
 // });
-var user = {'name':username,'passport':password};
-return done(null,user);
-}
-));
-passport.serializeUser(function(user, done) {
-done(null, user);
-});
-passport.deserializeUser(function(user, done) {
-done(null, user);
-});
+// passport.deserializeUser(function(user, done) {
+//   done(null, user);
+// });
 
 app.get('/dashboard', function (req, res) {
 // res.locals.scripts.push('/js/dashboard.js');
@@ -97,8 +137,8 @@ res.render('dashboard', { username:req.user.name,
 
 // respond to the get request with the home page
 app.get('/', function (req, res) {
-    res.locals.scripts.push('/js/home.js');
-    res.render('home');
+  res.locals.scripts.push('/js/home.js');
+  res.render('home');
 });
 
 // app.get('/detail', function (req, res) {
@@ -115,7 +155,7 @@ app.get('/about', function (req, res) {
 app.get('/register', function (req, res) {
     // res.locals.scripts.push('/js/register.js');
     res.render('register');
-});
+  });
 
 
 // passport.use('local', new LocalStrategy(
@@ -138,10 +178,10 @@ app.get('/register', function (req, res) {
 // ));
 
 app.post('/register',
-    passport.authenticate('local', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/'
-    }));
+  passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/'
+  }));
 
 //    function (req, res) {
 

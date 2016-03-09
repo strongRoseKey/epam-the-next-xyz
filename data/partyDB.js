@@ -6,6 +6,7 @@ var ArticleSchema = new Schema({
   url:String,
   image:String,
   username:String,
+  summary:String,
   data:Date
 });
 

@@ -6,7 +6,7 @@ $(function(){
         var dtlhome = document.getElementById("dtlhome");
 
         var div1 = document.createElement("div");
-        $(div1).addClass("col-lg-2 col-md-4 col-sm-6 ");
+        $(div1).addClass("col-lg-3 col-md-4 col-sm-6 ");
         var p1 = document.createElement("p");
         $(p1).addClass("text-center");
         $(p1).html(data[i].title);

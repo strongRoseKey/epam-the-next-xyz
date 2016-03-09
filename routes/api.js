@@ -39,11 +39,17 @@ router.get('/articles/:id', function(req, res, next) {
 	res.header('Access-Control-Allow-Origin','*');
 	res.header('Access-Control-Allow-Headers','X-Requested-With');
 
-		console.log("req.params.id:"+req.params._id);
+		// console.log("req.params.id:"+JSON.stringify(req.params));
+		// console.log("req.params.id:"+req.params.id);
 
-	Article.findById(req.params._id, function(err,article){
+
+	Article.findById(req.params.id, function(err,article){
 		if(!err){
-			res.render('detail',{data:article});
+			console.log(article.title);
+			res.render('detail',{
+				title:article.title,
+				image:article.image,
+				summary:article.summary});
 		}else{
 			res.send(404,'File not found!??????');
 		}
