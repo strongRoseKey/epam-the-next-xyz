@@ -5,6 +5,6 @@
     "express-handlebars": "^2.0.1",
     "mongoose": "^4.4.6",
     "underscore": "^1.8.3",
-
+    "cookie-parse": "^1.4.1"
   }
 }
