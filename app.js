@@ -29,6 +29,7 @@ var app = express();
 
 var api = require('./routes/api');
 
+var Article = require('./data/partyDB');
 // setup handlebars
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
@@ -71,7 +72,7 @@ app.use(flash());
 //
     function (username, password, done) {
       console.log("user: " + username + " pwd: " + password);
-      User.findOne({ username: username }, function (err, user) {
+      User.findOne({ email: username }, function (err, user) {
         if (err) {
           console.log("err");
           return done(err); }
@@ -105,15 +106,7 @@ app.use(flash());
 
 
 
-app.get('/dashboard', function (req, res) {
-// res.locals.scripts.push('/js/dashboard.js');
-res.render('dashboard', { username:req.user.name,
-  stuff: [{
-    greeting: "Hello",
-    subject: "World!"
-  }]
-});
-});
+
 
 // respond to the get request with the home page
 app.get('/', function (req, res) {
@@ -167,18 +160,41 @@ app.get('/login', function (req, res) {
 //     failureRedirect: '/'
 //   }));
 
-app.post('/register',passport.authenticate('local'),function(req,res){
+app.post('/register',function(req,res){
   // IMPORTANT - WE SHOULD NEVER SAVE OUR PASSWORD IN CLEAR TEXT
 
   var user = new User(req.body);
   user.save(function(err, user) {
     if (err) {
+      console.log("error");
       res.redirect('/register?status=fail');
+    }else{
+      console.log("no error");
     }
 
-    res.redirect('/login');
+    res.render('dashboard',{"username":user.username});
   });
 });
+
+
+    app.post('/login', passport.authenticate('local', {
+      successRedirect: '/dashboard',
+      failureRedirect: '/login'
+    }));
+
+
+// app.post('/login',passport.authenticate('local'),function(req,res){
+//   // IMPORTANT - WE SHOULD NEVER SAVE OUR PASSWORD IN CLEAR TEXT
+
+//   var user = new User(req.body);
+//   user.save(function(err, user) {
+//     if (err) {
+//       res.redirect('/register?status=fail');
+//     }
+
+//     res.redirect('/login');
+//   });
+// });
 
 //    function (req, res) {
 
@@ -194,14 +210,49 @@ app.post('/register',passport.authenticate('local'),function(req,res){
 
 // respond to the get request with dashboard page (and pass in some data into the template / note this will be rendered server-side)
 app.get('/dashboard', function (req, res) {
+  // console.log("req: "+JSON.stringify(req));
   res.render('dashboard', {
    stuff: [{
     greeting: "Hello",
-    subject: res.user.username,
-  }]
-});
+    subject: "World!",
+    }],
+    // user: req.user
+  });
 });
 
+// app.get('/dashboard', function (req, res) {
+// // res.locals.scripts.push('/js/dashboard.js');
+// res.render('dashboard', { username:req.user.name,
+//   stuff: [{
+//     greeting: "Hello",
+//     subject: "World!"
+//   }]
+// });
+// });
+
+app.get('/article/add', function (req, res) {
+  console.log("get");
+  res.render('article-add');
+});
+
+
+app.post('/addbook', function(req,res){
+  var Article = new Article(req.body);
+  Article.save(function(err,article){
+    if(err){
+      console.log("save err");
+    }
+    else{
+      console.log("not err");
+
+      res.render('home');
+    }
+
+
+
+
+  })
+});
 
 
 // the api (note that typically you would likely organize things a little differently to this)
